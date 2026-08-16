@@ -106,26 +106,6 @@ a:focus-visible {
   letter-spacing: -0.05em;
 }
 
-.hero-meta,
-.hero-scroll {
-  position: absolute;
-  z-index: 1;
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-}
-
-.hero-meta {
-  top: 24px;
-  right: 24px;
-}
-
-.hero-scroll {
-  right: 24px;
-  bottom: 24px;
-  border-bottom: 1px solid currentColor;
-}
-
 .collection {
   padding-top: 44px;
 }
@@ -315,16 +295,6 @@ a:focus-visible {
   .hero h1 {
     bottom: 58px;
     font-size: clamp(52px, 17vw, 80px);
-  }
-
-  .hero-meta {
-    top: 16px;
-    right: 16px;
-  }
-
-  .hero-scroll {
-    right: 16px;
-    bottom: 16px;
   }
 
   .filters {

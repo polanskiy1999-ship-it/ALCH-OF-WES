@@ -102,11 +102,7 @@ export default function Home() {
           src="/images/hero-editorial.png"
           alt="Букет коралловых свечей-тюльпанов на столике кафе"
         />
-        <div className="hero-meta">Свечи-букеты · Москва</div>
         <h1 id="hero-title">Alchemy of Wishes</h1>
-        <a className="hero-scroll" href="#collection">
-          Смотреть коллекцию ↓
-        </a>
       </section>
 
       <section className="collection" id="collection" aria-label="Коллекция свечей">
