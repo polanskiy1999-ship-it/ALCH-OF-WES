@@ -213,12 +213,9 @@ function ProductCard({ piece }: { piece: Piece }) {
             {String(piece.images.length).padStart(2, "0")}
           </span>
         ) : null}
-      </div>
-
-      <div className="project-meta">
         <div className="project-label">
           <h2>{piece.title}</h2>
-          <p>{piece.detail}</p>
+          <p>{piece.type}</p>
         </div>
 
         {piece.images.length > 1 ? (
@@ -260,7 +257,9 @@ export default function Home() {
         </a>
         <nav className="header-nav" aria-label="Основная навигация">
           <a href="#collection">Каталог</a>
-          <a href="#studio">Студия</a>
+          <a href="https://t.me/alchemy_of_wishes" target="_blank" rel="noreferrer">
+            Telegram
+          </a>
         </nav>
       </header>
 
@@ -308,18 +307,25 @@ export default function Home() {
           alt="Большой букет разноцветных свечей-тюльпанов"
           loading="lazy"
         />
-        <div className="editorial-stamp">Tulipa · 01</div>
-        <p>Свечи, собранные как цветы.</p>
       </section>
 
-      <section className="studio" id="studio" aria-label="О студии">
-        <p className="studio-kicker">Alchemy of Wishes · Москва</p>
-        <p className="studio-line">Каждая композиция собирается вручную.</p>
+      <section className="contact" id="contact" aria-label="Связаться в Telegram">
+        <p>Заказы и вопросы</p>
+        <a
+          className="telegram-link"
+          href="https://t.me/alchemy_of_wishes"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Открыть Alchemy of Wishes в Telegram"
+        >
+          <span>Telegram</span>
+          <span aria-hidden="true">↗</span>
+        </a>
       </section>
 
       <footer className="site-footer">
         <span>Alchemy of Wishes</span>
-        <span>Свечная студия · 2026</span>
+        <span>Москва · 2026</span>
       </footer>
     </main>
   );
