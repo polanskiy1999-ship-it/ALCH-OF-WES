@@ -112,8 +112,8 @@ a:focus-visible {
 
 .filters {
   display: flex;
-  gap: 24px;
-  margin-bottom: 28px;
+  gap: 22px;
+  margin-bottom: 36px;
 }
 
 .filters button {
@@ -133,6 +133,15 @@ a:focus-visible {
   color: var(--color-ink);
 }
 
+.filters button span {
+  position: relative;
+  top: -0.35em;
+  margin-left: 2px;
+  color: var(--color-fog);
+  font-size: 9px;
+  font-weight: 400;
+}
+
 .filters .filter-active {
   font-weight: 600;
 }
@@ -141,21 +150,15 @@ a:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
-  gap: 52px 24px;
+  gap: 64px 24px;
 }
 
 .project-media {
+  position: relative;
   width: 100%;
-  overflow: hidden;
-  background: #ece9e5;
-}
-
-.project-media--square {
-  aspect-ratio: 1;
-}
-
-.project-media--portrait {
   aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #eeeae5;
 }
 
 .project-image {
@@ -163,19 +166,37 @@ a:focus-visible {
   height: 100%;
   display: block;
   object-fit: cover;
-  transition: opacity 180ms ease;
-}
-
-.project-image--top {
-  object-position: center top;
+  filter: saturate(0.9) contrast(0.96) brightness(1.025);
+  transition: opacity 180ms ease, filter 180ms ease;
 }
 
 .project:hover .project-image {
-  opacity: 0.92;
+  filter: saturate(0.96) contrast(0.98) brightness(1.01);
+}
+
+.project-count {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  backdrop-filter: blur(8px);
+}
+
+.project-meta {
+  display: flex;
+  min-height: 64px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .project-label {
-  margin-top: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 .project-label h2,
@@ -195,6 +216,41 @@ a:focus-visible {
   font-weight: 400;
 }
 
+.project-thumbs {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 5px;
+}
+
+.project-thumb {
+  width: 26px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: #eeeae5;
+  cursor: pointer;
+  opacity: 0.48;
+  transition: opacity 160ms ease, border-color 160ms ease;
+}
+
+.project-thumb:hover,
+.project-thumb.is-active {
+  opacity: 1;
+}
+
+.project-thumb.is-active {
+  border-color: var(--color-ink);
+}
+
+.project-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
 .editorial-break {
   position: relative;
   margin-top: 120px;
@@ -205,6 +261,8 @@ a:focus-visible {
   height: min(72vw, 820px);
   display: block;
   object-fit: cover;
+  object-position: center 62%;
+  filter: saturate(0.88) contrast(0.96) brightness(1.03);
 }
 
 .editorial-break p {
@@ -301,16 +359,25 @@ a:focus-visible {
     gap: 18px;
     overflow-x: auto;
     padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none;
   }
 
   .project-grid {
     grid-template-columns: 1fr;
-    gap: 42px;
+    gap: 48px;
   }
 
-  .project-media--square,
-  .project-media--portrait {
-    aspect-ratio: 4 / 5;
+  .project-meta {
+    min-height: 58px;
+  }
+
+  .project-thumb {
+    width: 30px;
+    height: 38px;
   }
 
   .editorial-break {
@@ -353,6 +420,10 @@ a:focus-visible {
   }
 
   .project-image {
+    transition: none;
+  }
+
+  .project-thumb {
     transition: none;
   }
 }
