@@ -455,7 +455,9 @@ a:focus-visible {
 }
 
 .project-label h2 {
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  -webkit-text-stroke: 0.18px currentColor;
 }
 
 .project-label p {
@@ -792,7 +794,9 @@ a:focus-visible {
 
 .cart-item-copy strong {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  -webkit-text-stroke: 0.18px currentColor;
 }
 
 .cart-item-copy span {
