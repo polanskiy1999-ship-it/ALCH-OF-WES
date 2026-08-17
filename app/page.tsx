@@ -243,7 +243,7 @@ export default function Home() {
             Заказ <span>{cartCount}</span>
           </button>
           <a
-            className="telegram-button"
+            className="telegram-link telegram-button"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
@@ -391,7 +391,7 @@ export default function Home() {
             </p>
           </div>
           <a
-            className="founder-telegram"
+            className="telegram-link founder-telegram"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
@@ -407,7 +407,7 @@ export default function Home() {
         <span className="footer-meta">Свечная студия · 2026</span>
         <div className="footer-actions">
           <a
-            className="footer-telegram"
+            className="telegram-link footer-telegram"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
@@ -415,11 +415,12 @@ export default function Home() {
             <span>Наш Telegram</span>
             <span aria-hidden="true">↗</span>
           </a>
-          <a className="footer-up" href="#top" aria-label="Наверх">
-            <span aria-hidden="true">↑</span>
-          </a>
         </div>
       </footer>
+
+      <a className="back-to-top" href="#top" aria-label="Наверх">
+        <span aria-hidden="true">↑</span>
+      </a>
 
       {cartCount > 0 && !isCartOpen ? (
         <button className="floating-order" type="button" onClick={openCart}>
