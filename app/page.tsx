@@ -260,7 +260,7 @@ export default function Home() {
         </a>
         <nav className="header-nav" aria-label="Основная навигация">
           <a href="#collection">Каталог</a>
-          <a href="#studio">Студия</a>
+          <a href="#studio">О нас</a>
           <a
             className="telegram-button"
             href="https://t.me/alchemy_of_wishes"
