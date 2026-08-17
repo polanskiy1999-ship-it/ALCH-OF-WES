@@ -188,18 +188,26 @@ a:focus-visible {
 
 .filters button {
   appearance: none;
-  padding: 0;
-  border: 0;
+  padding: 7px 9px 6px;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--color-ash);
   font: inherit;
   font-size: 13px;
   line-height: 1.4;
   cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
-.filters button:hover,
+.filters button:hover {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--surface-canvas);
+}
+
 .filters .filter-active {
+  border-color: var(--color-ink);
+  background: var(--surface-canvas);
   color: var(--color-ink);
 }
 
@@ -210,6 +218,10 @@ a:focus-visible {
   color: var(--color-fog);
   font-size: 9px;
   font-weight: 400;
+}
+
+.filters button:hover span {
+  color: inherit;
 }
 
 .filters .filter-active {
@@ -485,10 +497,8 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
-  padding: 10px 0 8px;
-  border: 0;
-  border-top: 1px solid #d8d8d8;
-  border-bottom: 1px solid transparent;
+  padding: 10px 9px 9px;
+  border: 1px solid #d8d8d8;
   background: transparent;
   color: var(--color-ink);
   font: inherit;
@@ -497,10 +507,13 @@ a:focus-visible {
   text-align: left;
   text-transform: uppercase;
   cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
 .project-add:hover {
-  border-bottom-color: var(--color-ink);
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--surface-canvas);
 }
 
 .project-add span:last-child {
