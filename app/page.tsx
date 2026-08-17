@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { categories, pieces, type Category, type Piece } from "./catalog";
 
 type Cart = Record<string, number>;
@@ -89,17 +89,27 @@ function buildTelegramDraft(
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<Category>("Все");
+  const [sortMode, setSortMode] = useState<"default" | "alphabetical">("default");
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [cart, setCart] = useState<Cart>({});
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
+  const sortControlRef = useRef<HTMLDivElement>(null);
 
-  const visiblePieces = useMemo(
-    () =>
+  const visiblePieces = useMemo(() => {
+    const filtered =
       activeCategory === "Все"
         ? pieces
-        : pieces.filter((piece) => piece.type === activeCategory),
-    [activeCategory],
-  );
+        : pieces.filter((piece) => piece.type === activeCategory);
+
+    if (sortMode === "alphabetical") {
+      return [...filtered].sort((left, right) =>
+        left.title.localeCompare(right.title, "ru", { sensitivity: "base" }),
+      );
+    }
+
+    return filtered;
+  }, [activeCategory, sortMode]);
 
   const cartItems = useMemo(
     () =>
@@ -127,6 +137,27 @@ export default function Home() {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [isCartOpen]);
+
+  useEffect(() => {
+    if (!isSortOpen) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!sortControlRef.current?.contains(event.target as Node)) {
+        setIsSortOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsSortOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isSortOpen]);
 
   function addToCart(pieceId: string) {
     setCart((current) => ({
@@ -233,26 +264,82 @@ export default function Home() {
       </section>
 
       <section className="collection" id="collection" aria-label="Каталог свечей">
-        <nav className="filters" aria-label="Фильтр каталога">
-          {categories.map((category) => {
-            const count =
-              category === "Все"
-                ? pieces.length
-                : pieces.filter((piece) => piece.type === category).length;
+        <div className="catalog-toolbar">
+          <nav className="filters" aria-label="Фильтр каталога">
+            {categories.map((category) => {
+              const count =
+                category === "Все"
+                  ? pieces.length
+                  : pieces.filter((piece) => piece.type === category).length;
 
-            return (
-              <button
-                key={category}
-                className={activeCategory === category ? "filter-active" : undefined}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-                aria-pressed={activeCategory === category}
-              >
-                {category} <span>{count}</span>
-              </button>
-            );
-          })}
-        </nav>
+              return (
+                <button
+                  key={category}
+                  className={activeCategory === category ? "filter-active" : undefined}
+                  type="button"
+                  onClick={() => setActiveCategory(category)}
+                  aria-pressed={activeCategory === category}
+                >
+                  {category} <span>{count}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="sort-control" ref={sortControlRef}>
+            <button
+              className={isSortOpen || sortMode !== "default" ? "sort-trigger is-active" : "sort-trigger"}
+              type="button"
+              onClick={() => setIsSortOpen((current) => !current)}
+              aria-expanded={isSortOpen}
+              aria-controls="catalog-sort-menu"
+              aria-label="Открыть сортировку каталога"
+            >
+              <span className="sort-icon" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+
+            {isSortOpen ? (
+              <div className="sort-menu" id="catalog-sort-menu" role="dialog" aria-label="Сортировка">
+                <p className="sort-menu-title">Сортировка</p>
+                <button type="button" disabled title="Будет доступно после добавления цен">
+                  <span>Сначала дешевле</span>
+                  <small>Скоро</small>
+                </button>
+                <button type="button" disabled title="Будет доступно после добавления цен">
+                  <span>Сначала дороже</span>
+                  <small>Скоро</small>
+                </button>
+                <button
+                  className={sortMode === "alphabetical" ? "is-selected" : undefined}
+                  type="button"
+                  onClick={() => {
+                    setSortMode("alphabetical");
+                    setIsSortOpen(false);
+                  }}
+                >
+                  <span>По алфавиту</span>
+                  <small aria-hidden="true">{sortMode === "alphabetical" ? "✓" : "А—Я"}</small>
+                </button>
+                {sortMode !== "default" ? (
+                  <button
+                    className="sort-reset"
+                    type="button"
+                    onClick={() => {
+                      setSortMode("default");
+                      setIsSortOpen(false);
+                    }}
+                  >
+                    Сбросить
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
 
         <div className="project-grid" aria-live="polite">
           {visiblePieces.map((piece) => (
