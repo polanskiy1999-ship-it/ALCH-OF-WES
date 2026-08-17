@@ -1,199 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { categories, pieces, type Category, type Piece } from "./catalog";
 
-type Category =
-  | "Все"
-  | "Букеты"
-  | "Цветы"
-  | "Подарки"
-  | "Для дома"
-  | "Необычные";
+type Cart = Record<string, number>;
+type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
 
-type Piece = {
-  title: string;
-  type: Exclude<Category, "Все">;
-  detail: string;
-  images: string[];
-  focal?: string;
-};
-
-const categories: Category[] = [
-  "Все",
-  "Букеты",
-  "Цветы",
-  "Подарки",
-  "Для дома",
-  "Необычные",
-];
-
-const pieces: Piece[] = [
-  {
-    title: "Первый свет",
-    type: "Букеты",
-    detail: "Букет свечей-тюльпанов",
-    images: [
-      "/images/tulip-grand-wide.jpg",
-      "/images/tulip-grand-portrait.jpg",
-    ],
-  },
-  {
-    title: "Тихий рассвет",
-    type: "Букеты",
-    detail: "Мини-букет тюльпанов",
-    images: [
-      "/images/tulip-pink-wrap-top.jpg",
-      "/images/tulip-pink-wrap-kraft.jpg",
-      "/images/tulip-pink-wrap-long.jpg",
-    ],
-  },
-  {
-    title: "Весенний спектр",
-    type: "Букеты",
-    detail: "Композиция из тюльпанов",
-    images: [
-      "/images/tulip-spectrum-vase.jpg",
-      "/images/tulip-spectrum-dark.jpg",
-      "/images/tulip-spectrum-close.jpg",
-    ],
-  },
-  {
-    title: "Золотые тюльпаны",
-    type: "Букеты",
-    detail: "Букет свечей-тюльпанов",
-    images: [
-      "/images/tulip-yellow-flat.jpg",
-      "/images/tulip-yellow-wrap.jpg",
-      "/images/tulip-yellow-evening.jpg",
-    ],
-  },
-  {
-    title: "Медовое солнце",
-    type: "Цветы",
-    detail: "Свечи-одуванчики",
-    images: [
-      "/images/dandelion-stems.jpg",
-      "/images/dandelion-hand.jpg",
-    ],
-  },
-  {
-    title: "Три розы",
-    type: "Цветы",
-    detail: "Свечи-цветы",
-    images: [
-      "/images/rose-trio-pedestal.jpg",
-      "/images/rose-trio-flat.jpg",
-    ],
-  },
-  {
-    title: "Солнечный кристалл",
-    type: "Цветы",
-    detail: "Свеча-цветок",
-    images: ["/images/crystal-flower.jpg"],
-  },
-  {
-    title: "Один тюльпан",
-    type: "Цветы",
-    detail: "Свеча на стебле",
-    images: [
-      "/images/tulip-single-vase.jpg",
-      "/images/tulip-single-hand.jpg",
-      "/images/tulip-single-flat.jpg",
-    ],
-  },
-  {
-    title: "Василёк",
-    type: "Цветы",
-    detail: "Свечи на стебле",
-    images: [
-      "/images/cornflower-stems.jpg",
-      "/images/cornflower-hand.jpg",
-    ],
-  },
-  {
-    title: "Пион для неё",
-    type: "Подарки",
-    detail: "Свеча в подарочной упаковке",
-    images: [
-      "/images/peony-editorial.jpg",
-      "/images/peony-vanity.jpg",
-      "/images/peony-close.jpg",
-      "/images/peony-satin.jpg",
-    ],
-  },
-  {
-    title: "Арома-саше",
-    type: "Подарки",
-    detail: "Воск и сухие цветы",
-    images: ["/images/aroma-sachet.jpg"],
-  },
-  {
-    title: "Сердце в коробке",
-    type: "Подарки",
-    detail: "Подарочный набор · три цвета",
-    images: [
-      "/images/heart-gift-pink.jpg",
-      "/images/heart-gift-blue.jpg",
-      "/images/heart-gift-lilac.jpg",
-    ],
-  },
-  {
-    title: "Пара",
-    type: "Подарки",
-    detail: "Комплект свечей с сердцами",
-    images: [
-      "/images/heart-pair-white.jpg",
-      "/images/heart-pair-pink.jpg",
-      "/images/heart-pair-red.jpg",
-    ],
-  },
-  {
-    title: "Свечные конфеты",
-    type: "Подарки",
-    detail: "Набор мини-свечей",
-    images: [
-      "/images/candle-sweets-table.jpg",
-      "/images/candle-sweets-boxes.jpg",
-      "/images/candle-sweets-close.jpg",
-    ],
-  },
-  {
-    title: "Лавандовый дом",
-    type: "Для дома",
-    detail: "Интерьерная свеча",
-    images: [
-      "/images/lavender-home-lit.jpg",
-      "/images/lavender-home.jpg",
-    ],
-  },
-  {
-    title: "Летний гербарий",
-    type: "Для дома",
-    detail: "Свеча с сухими цветами",
-    images: [
-      "/images/herbarium-lit.jpg",
-      "/images/herbarium-cube.jpg",
-    ],
-  },
-  {
-    title: "Зимний огонь",
-    type: "Для дома",
-    detail: "Свеча с травами",
-    images: ["/images/winter-candle.jpg"],
-  },
-  {
-    title: "Пельмени при свечах",
-    type: "Необычные",
-    detail: "Свечной арт-объект",
-    images: [
-      "/images/dumpling-candle-top.jpg",
-      "/images/dumpling-candle-bowl.jpg",
-      "/images/dumpling-candle-plate.jpg",
-    ],
-  },
-];
-
-function ProductCard({ piece }: { piece: Piece }) {
+function ProductCard({
+  piece,
+  quantity,
+  onAdd,
+}: {
+  piece: Piece;
+  quantity: number;
+  onAdd: () => void;
+}) {
   const [activeImage, setActiveImage] = useState(0);
   const currentImage = piece.images[activeImage] ?? piece.images[0];
 
@@ -238,12 +59,40 @@ function ProductCard({ piece }: { piece: Piece }) {
           </div>
         ) : null}
       </div>
+
+      <button className="project-add" type="button" onClick={onAdd}>
+        <span>{quantity > 0 ? `В заказе · ${quantity}` : "Добавить в заказ"}</span>
+        <span aria-hidden="true">+</span>
+      </button>
     </article>
   );
 }
 
+function buildTelegramDraft(
+  name: string,
+  telegram: string,
+  comment: string,
+  cartItems: Array<{ piece: Piece; quantity: number }>,
+) {
+  const lines = [
+    "Здравствуйте! Хочу заказать:",
+    "",
+    ...cartItems.map(({ piece, quantity }) => `• ${piece.title} — ${quantity} шт.`),
+    "",
+    `Имя: ${name}`,
+    `Telegram: ${telegram}`,
+  ];
+
+  if (comment) lines.push(`Комментарий: ${comment}`);
+  return lines.join("\n");
+}
+
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<Category>("Все");
+  const [cart, setCart] = useState<Cart>({});
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
+
   const visiblePieces = useMemo(
     () =>
       activeCategory === "Все"
@@ -251,6 +100,104 @@ export default function Home() {
         : pieces.filter((piece) => piece.type === activeCategory),
     [activeCategory],
   );
+
+  const cartItems = useMemo(
+    () =>
+      pieces
+        .filter((piece) => (cart[piece.id] ?? 0) > 0)
+        .map((piece) => ({ piece, quantity: cart[piece.id] })),
+    [cart],
+  );
+
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsCartOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isCartOpen]);
+
+  function addToCart(pieceId: string) {
+    setCart((current) => ({
+      ...current,
+      [pieceId]: Math.min((current[pieceId] ?? 0) + 1, 20),
+    }));
+    setOrderStatus("idle");
+  }
+
+  function updateQuantity(pieceId: string, quantity: number) {
+    setCart((current) => {
+      const next = { ...current };
+      if (quantity <= 0) delete next[pieceId];
+      else next[pieceId] = Math.min(quantity, 20);
+      return next;
+    });
+    setOrderStatus("idle");
+  }
+
+  function openCart() {
+    setOrderStatus("idle");
+    setIsCartOpen(true);
+  }
+
+  async function submitOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (cartItems.length === 0 || orderStatus === "submitting") return;
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const name = String(formData.get("name") ?? "").trim();
+    const telegram = String(formData.get("telegram") ?? "").trim();
+    const comment = String(formData.get("comment") ?? "").trim();
+    const company = String(formData.get("company") ?? "").trim();
+
+    setOrderStatus("submitting");
+
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name,
+          telegram,
+          comment,
+          company,
+          items: cartItems.map(({ piece, quantity }) => ({ id: piece.id, quantity })),
+        }),
+      });
+
+      if (response.ok) {
+        setCart({});
+        setOrderStatus("sent");
+        form.reset();
+        return;
+      }
+
+      const result = (await response.json().catch(() => null)) as { code?: string } | null;
+
+      if (result?.code === "telegram_not_configured") {
+        const draft = buildTelegramDraft(name, telegram, comment, cartItems);
+        setOrderStatus("telegram");
+        window.location.href = `https://t.me/alchemy_of_wishes?text=${encodeURIComponent(draft)}`;
+        return;
+      }
+
+      throw new Error("order_failed");
+    } catch {
+      setOrderStatus("error");
+    }
+  }
 
   return (
     <main className="site-shell">
@@ -261,6 +208,9 @@ export default function Home() {
         <nav className="header-nav" aria-label="Основная навигация">
           <a href="#collection">Каталог</a>
           <a href="#studio">О нас</a>
+          <button className="order-nav-button" type="button" onClick={openCart}>
+            Заказ <span>{cartCount}</span>
+          </button>
           <a
             className="telegram-button"
             href="https://t.me/alchemy_of_wishes"
@@ -306,7 +256,12 @@ export default function Home() {
 
         <div className="project-grid" aria-live="polite">
           {visiblePieces.map((piece) => (
-            <ProductCard piece={piece} key={piece.title} />
+            <ProductCard
+              piece={piece}
+              quantity={cart[piece.id] ?? 0}
+              onAdd={() => addToCart(piece.id)}
+              key={piece.id}
+            />
           ))}
         </div>
       </section>
@@ -371,6 +326,130 @@ export default function Home() {
           </a>
         </span>
       </footer>
+
+      {cartCount > 0 && !isCartOpen ? (
+        <button className="floating-order" type="button" onClick={openCart}>
+          <span>Оформить заказ</span>
+          <span>{cartCount}</span>
+        </button>
+      ) : null}
+
+      {isCartOpen ? (
+        <div className="cart-layer" role="presentation">
+          <button
+            className="cart-backdrop"
+            type="button"
+            onClick={() => setIsCartOpen(false)}
+            aria-label="Закрыть заказ"
+          />
+          <aside className="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+            <div className="cart-header">
+              <div>
+                <p>Alchemy of Wishes</p>
+                <h2 id="cart-title">Ваш заказ</h2>
+              </div>
+              <button className="cart-close" type="button" onClick={() => setIsCartOpen(false)}>
+                Закрыть
+              </button>
+            </div>
+
+            {orderStatus === "sent" ? (
+              <div className="order-success" role="status">
+                <span aria-hidden="true">✓</span>
+                <h3>Заказ отправлен</h3>
+                <p>Евгения напишет вам в Telegram, чтобы уточнить детали и стоимость.</p>
+                <button type="button" onClick={() => setIsCartOpen(false)}>
+                  Вернуться к каталогу
+                </button>
+              </div>
+            ) : cartItems.length === 0 ? (
+              <div className="cart-empty">
+                <p>Здесь пока пусто.</p>
+                <button type="button" onClick={() => setIsCartOpen(false)}>
+                  Выбрать свечи
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="cart-list">
+                  {cartItems.map(({ piece, quantity }) => (
+                    <div className="cart-item" key={piece.id}>
+                      <img src={piece.images[0]} alt="" aria-hidden="true" />
+                      <div className="cart-item-copy">
+                        <strong>{piece.title}</strong>
+                        <span>{piece.detail}</span>
+                      </div>
+                      <div className="quantity-control" aria-label={`Количество: ${piece.title}`}>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(piece.id, quantity - 1)}
+                          aria-label={`Уменьшить количество: ${piece.title}`}
+                        >
+                          −
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(piece.id, quantity + 1)}
+                          aria-label={`Увеличить количество: ${piece.title}`}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <form className="order-form" onSubmit={submitOrder}>
+                  <p className="order-note">
+                    Оставьте контакты — детали и стоимость согласуем в Telegram.
+                  </p>
+                  <label>
+                    <span>Имя</span>
+                    <input name="name" type="text" autoComplete="name" required maxLength={80} />
+                  </label>
+                  <label>
+                    <span>Ваш Telegram</span>
+                    <input
+                      name="telegram"
+                      type="text"
+                      inputMode="text"
+                      autoComplete="off"
+                      placeholder="@username"
+                      required
+                      maxLength={80}
+                    />
+                  </label>
+                  <label>
+                    <span>Комментарий</span>
+                    <textarea
+                      name="comment"
+                      rows={3}
+                      placeholder="Цвет, упаковка, дата — если уже знаете"
+                      maxLength={800}
+                    />
+                  </label>
+                  <label className="order-honeypot" aria-hidden="true">
+                    <span>Компания</span>
+                    <input name="company" type="text" tabIndex={-1} autoComplete="off" />
+                  </label>
+                  <button className="order-submit" type="submit" disabled={orderStatus === "submitting"}>
+                    <span>{orderStatus === "submitting" ? "Отправляем…" : "Отправить заказ"}</span>
+                    <span aria-hidden="true">↗</span>
+                  </button>
+                  <p className="order-status" aria-live="polite">
+                    {orderStatus === "telegram"
+                      ? "Заказ подготовлен — осталось отправить сообщение в Telegram."
+                      : orderStatus === "error"
+                        ? "Не получилось отправить. Попробуйте ещё раз или напишите нам в Telegram."
+                        : ""}
+                  </p>
+                </form>
+              </>
+            )}
+          </aside>
+        </div>
+      ) : null}
     </main>
   );
 }
