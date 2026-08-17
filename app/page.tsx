@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { categories, pieces, type Category, type Piece } from "./catalog";
 import { buildOrderRequest, buildTelegramDraft } from "./order-payload";
+import { submitOrderRequest } from "./order-transport";
 
 type Cart = Record<string, number>;
 type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
@@ -213,11 +214,7 @@ export default function Home() {
     setOrderStatus("submitting");
 
     try {
-      const response = await fetch("/api/order", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await submitOrderRequest(payload);
 
       if (response.ok) {
         setCart({});
