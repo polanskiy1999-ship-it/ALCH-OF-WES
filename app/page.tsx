@@ -350,7 +350,7 @@ export default function Home() {
             target="_blank"
             rel="noreferrer"
           >
-            <span>Написать Евгении</span>
+            <span>Наш телеграмм</span>
             <span aria-hidden="true">↗</span>
           </a>
         </div>
