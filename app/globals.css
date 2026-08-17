@@ -5,7 +5,7 @@
   --color-fog: #b3b3b3;
   --color-ash: #868686;
   --surface-canvas: #ffffff;
-  --font-structural: var(--font-geist-sans), Arial, sans-serif;
+  --font-structural: var(--font-anonymous-pro), "Courier New", monospace;
   --font-display: Iowan Old Style, Baskerville, "Times New Roman", serif;
   --page-max-width: 1400px;
 }
