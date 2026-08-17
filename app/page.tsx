@@ -404,23 +404,24 @@ export default function Home() {
 
       <footer className="site-footer">
         <span className="footer-brand">Alchemy of Wishes</span>
-        <span className="footer-meta">Свечная студия · 2026</span>
-        <div className="footer-actions">
-          <a
-            className="telegram-link footer-telegram"
-            href="https://t.me/alchemy_of_wishes"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>Наш Telegram</span>
-            <span aria-hidden="true">↗</span>
-          </a>
+        <div className="footer-end">
+          <span className="footer-meta">Свечная студия · 2026</span>
+          <div className="footer-actions">
+            <a
+              className="telegram-link footer-telegram"
+              href="https://t.me/alchemy_of_wishes"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Наш Telegram</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
+        <a className="back-to-top" href="#top" aria-label="Наверх">
+          <span aria-hidden="true">↑</span>
+        </a>
       </footer>
-
-      <a className="back-to-top" href="#top" aria-label="Наверх">
-        <span aria-hidden="true">↑</span>
-      </a>
 
       {cartCount > 0 && !isCartOpen ? (
         <button className="floating-order" type="button" onClick={openCart}>
