@@ -403,18 +403,22 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <span>Alchemy of Wishes</span>
-        <span>
-          Свечная студия · 2026 ·{" "}
+        <span className="footer-brand">Alchemy of Wishes</span>
+        <span className="footer-meta">Свечная студия · 2026</span>
+        <div className="footer-actions">
           <a
             className="footer-telegram"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
           >
-            Telegram ↗
+            <span>Наш Telegram</span>
+            <span aria-hidden="true">↗</span>
           </a>
-        </span>
+          <a className="footer-up" href="#top" aria-label="Наверх">
+            <span aria-hidden="true">↑</span>
+          </a>
+        </div>
       </footer>
 
       {cartCount > 0 && !isCartOpen ? (
