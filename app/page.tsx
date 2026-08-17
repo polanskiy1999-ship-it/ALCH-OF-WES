@@ -267,7 +267,8 @@ export default function Home() {
             target="_blank"
             rel="noreferrer"
           >
-            Telegram
+            <span>Telegram</span>
+            <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </header>
@@ -320,9 +321,39 @@ export default function Home() {
         <p>Свечи, собранные как цветы.</p>
       </section>
 
-      <section className="studio" id="studio" aria-label="О студии">
-        <p className="studio-kicker">Alchemy of Wishes · Москва</p>
-        <p className="studio-line">Каждая композиция собирается вручную.</p>
+      <section className="studio" id="studio" aria-labelledby="founder-title">
+        <div className="founder-portrait">
+          <img
+            src="/images/evgenia-founder.jpg"
+            alt="Евгения — создательница Alchemy of Wishes"
+            loading="lazy"
+          />
+        </div>
+
+        <div className="founder-copy">
+          <p className="studio-kicker">Создательница Alchemy of Wishes</p>
+          <h2 id="founder-title">Евгения</h2>
+          <div className="founder-story">
+            <p>
+              Евгения — автор всех свечей и композиций, представленных на этом
+              сайте.
+            </p>
+            <p>
+              Она придумывает формы, подбирает оттенки и вручную собирает каждый
+              букет. Поэтому даже похожие композиции немного отличаются друг от
+              друга — как настоящие цветы.
+            </p>
+          </div>
+          <a
+            className="founder-telegram"
+            href="https://t.me/alchemy_of_wishes"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>Написать Евгении</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </section>
 
       <footer className="site-footer">
