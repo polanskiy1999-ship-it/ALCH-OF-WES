@@ -262,6 +262,7 @@ export default function Home() {
           <a href="#collection">Каталог</a>
           <a href="#studio">Студия</a>
           <a
+            className="telegram-button"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
@@ -329,6 +330,7 @@ export default function Home() {
         <span>
           Свечная студия · 2026 ·{" "}
           <a
+            className="footer-telegram"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
