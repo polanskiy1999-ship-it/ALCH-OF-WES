@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { categories, pieces, type Category, type Piece } from "./catalog";
+import { buildOrderRequest, buildTelegramDraft } from "./order-payload";
 
 type Cart = Record<string, number>;
 type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
@@ -67,25 +68,6 @@ function ProductCard({
       </button>
     </article>
   );
-}
-
-function buildTelegramDraft(
-  name: string,
-  telegram: string,
-  comment: string,
-  cartItems: Array<{ piece: Piece; quantity: number }>,
-) {
-  const lines = [
-    "Здравствуйте! Хочу заказать:",
-    "",
-    ...cartItems.map(({ piece, quantity }) => `• ${piece.title} — ${quantity} шт.`),
-    "",
-    `Имя: ${name}`,
-    `Telegram: ${telegram}`,
-  ];
-
-  if (comment) lines.push(`Комментарий: ${comment}`);
-  return lines.join("\n");
 }
 
 export default function Home() {
@@ -226,10 +208,7 @@ export default function Home() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const name = String(formData.get("name") ?? "").trim();
-    const telegram = String(formData.get("telegram") ?? "").trim();
-    const comment = String(formData.get("comment") ?? "").trim();
-    const company = String(formData.get("company") ?? "").trim();
+    const payload = buildOrderRequest(formData, cartItems);
 
     setOrderStatus("submitting");
 
@@ -237,13 +216,7 @@ export default function Home() {
       const response = await fetch("/api/order", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          name,
-          telegram,
-          comment,
-          company,
-          items: cartItems.map(({ piece, quantity }) => ({ id: piece.id, quantity })),
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -256,7 +229,12 @@ export default function Home() {
       const result = (await response.json().catch(() => null)) as { code?: string } | null;
 
       if (result?.code === "telegram_not_configured") {
-        const draft = buildTelegramDraft(name, telegram, comment, cartItems);
+        const draft = buildTelegramDraft(
+          payload.name,
+          payload.telegram,
+          payload.comment,
+          cartItems,
+        );
         setOrderStatus("telegram");
         window.location.href = `https://t.me/alchemy_of_wishes?text=${encodeURIComponent(draft)}`;
         return;
