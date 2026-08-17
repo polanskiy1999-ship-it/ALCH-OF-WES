@@ -1,0 +1,4 @@
+project_id = "alchemy-of-wishes"
+
+[functions.order]
+verify_jwt = false
