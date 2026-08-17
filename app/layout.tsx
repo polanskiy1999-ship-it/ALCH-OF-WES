@@ -20,7 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol =
     incomingHeaders.get("x-forwarded-proto") ??
     (host.includes("localhost") ? "http" : "https");
-  const socialImage = new URL("/og.png", `${protocol}://${host}`).toString();
+  const socialImage = new URL(
+    "/og-alchemy-wordmark.png",
+    `${protocol}://${host}`,
+  ).toString();
 
   return {
     title: "Alchemy of Wishes — свечи-букеты",
@@ -30,7 +33,14 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Свечи ручной работы, собранные как цветочные букеты.",
       type: "website",
       siteName: "Alchemy of Wishes",
-      images: [{ url: socialImage, alt: "Alchemy of Wishes — candle atelier" }],
+      images: [
+        {
+          url: socialImage,
+          width: 1728,
+          height: 909,
+          alt: "Alchemy of Wishes",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
