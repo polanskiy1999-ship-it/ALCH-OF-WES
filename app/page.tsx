@@ -296,9 +296,12 @@ export default function Home() {
               aria-label="Открыть сортировку каталога"
             >
               <span className="sort-icon" aria-hidden="true">
-                <span />
-                <span />
-                <span />
+                <span className="sort-arrow" />
+                <span className="sort-steps">
+                  <i />
+                  <i />
+                  <i />
+                </span>
               </span>
             </button>
 
@@ -333,7 +336,7 @@ export default function Home() {
                       setIsSortOpen(false);
                     }}
                   >
-                    Сбросить
+                    Сбросить сортировку
                   </button>
                 ) : null}
               </div>
