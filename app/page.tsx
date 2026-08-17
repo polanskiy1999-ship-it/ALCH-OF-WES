@@ -256,7 +256,9 @@ export default function Home() {
     <main className="site-shell">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Alchemy of Wishes — на главную">
-          Alchemy of Wishes
+          <span className="brand-logo" aria-hidden="true">
+            <img src="/images/brand-wax-horizontal.png" alt="" />
+          </span>
         </a>
         <nav className="header-nav" aria-label="Основная навигация">
           <a href="#collection">Каталог</a>
@@ -279,7 +281,9 @@ export default function Home() {
           src="/images/hero-editorial.png"
           alt="Букет коралловых свечей-тюльпанов на столике кафе"
         />
-        <h1 id="hero-title">Alchemy of Wishes</h1>
+        <h1 className="sr-only" id="hero-title">
+          Alchemy of Wishes
+        </h1>
       </section>
 
       <section className="collection" id="collection" aria-label="Каталог свечей">
