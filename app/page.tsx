@@ -413,7 +413,7 @@ export default function Home() {
       <section className="studio" id="studio" aria-labelledby="founder-title">
         <div className="founder-portrait">
           <img
-            src="/images/evgenia-founder.jpg"
+            src="/images/evgenia-founder.webp"
             alt="Евгения — создательница Alchemy of Wishes"
             loading="lazy"
           />
