@@ -5,6 +5,7 @@ import { categories, pieces, type Category, type Piece } from "./catalog";
 
 type Cart = Record<string, number>;
 type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
+type HeaderMode = "top" | "hidden" | "visible";
 
 function ProductCard({
   piece,
@@ -94,7 +95,9 @@ export default function Home() {
   const [cart, setCart] = useState<Cart>({});
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
+  const [headerMode, setHeaderMode] = useState<HeaderMode>("top");
   const sortControlRef = useRef<HTMLDivElement>(null);
+  const lastScrollYRef = useRef(0);
 
   const visiblePieces = useMemo(() => {
     const filtered =
@@ -158,6 +161,41 @@ export default function Home() {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [isSortOpen]);
+
+  useEffect(() => {
+    let animationFrame = 0;
+
+    const updateHeader = () => {
+      const currentScrollY = Math.max(window.scrollY, 0);
+      const scrollDelta = currentScrollY - lastScrollYRef.current;
+
+      if (currentScrollY <= 96) {
+        setHeaderMode("top");
+      } else if (scrollDelta < -2) {
+        setHeaderMode("visible");
+      } else if (scrollDelta > 2) {
+        setHeaderMode("hidden");
+      }
+
+      lastScrollYRef.current = currentScrollY;
+      animationFrame = 0;
+    };
+
+    const handleScroll = () => {
+      if (animationFrame === 0) {
+        animationFrame = window.requestAnimationFrame(updateHeader);
+      }
+    };
+
+    lastScrollYRef.current = window.scrollY;
+    updateHeader();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrame !== 0) window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
 
   function addToCart(pieceId: string) {
     setCart((current) => ({
@@ -232,27 +270,33 @@ export default function Home() {
 
   return (
     <main className="site-shell">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Alchemy of Wishes — на главную">
-          Alchemy of Wishes
-        </a>
-        <nav className="header-nav" aria-label="Основная навигация">
-          <a href="#collection">Каталог</a>
-          <a href="#studio">О нас</a>
-          <button className="order-nav-button" type="button" onClick={openCart}>
-            Заказ <span>{cartCount}</span>
-          </button>
-          <a
-            className="telegram-link telegram-button"
-            href="https://t.me/alchemy_of_wishes"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>Telegram</span>
-            <span aria-hidden="true">↗</span>
+      <div className="site-header-slot">
+        <header
+          className={`site-header${headerMode === "top" ? "" : " is-floating"}${
+            headerMode === "visible" ? " is-visible" : ""
+          }`}
+        >
+          <a className="brand" href="#top" aria-label="Alchemy of Wishes — на главную">
+            Alchemy of Wishes
           </a>
-        </nav>
-      </header>
+          <nav className="header-nav" aria-label="Основная навигация">
+            <a href="#collection">Каталог</a>
+            <a href="#studio">О нас</a>
+            <button className="order-nav-button" type="button" onClick={openCart}>
+              Заказ <span>{cartCount}</span>
+            </button>
+            <a
+              className="telegram-link telegram-button"
+              href="https://t.me/alchemy_of_wishes"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Telegram</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </nav>
+        </header>
+      </div>
 
       <section className="hero" id="top" aria-labelledby="hero-title">
         <img
