@@ -547,13 +547,16 @@ a:focus-visible {
 }
 
 .project-add {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px;
   width: 100%;
+  min-height: 38px;
   align-items: center;
-  justify-content: space-between;
   margin-top: 10px;
-  padding: 10px 9px 9px;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid #d8d8d8;
+  border-radius: 0;
   background: transparent;
   color: var(--color-ink);
   font: inherit;
@@ -565,16 +568,48 @@ a:focus-visible {
   transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
+.project-add-label {
+  min-width: 0;
+  padding: 0 11px;
+}
+
+.project-add-control {
+  width: 38px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  border-left: 1px solid #d8d8d8;
+  transition: border-color 150ms ease;
+}
+
+.project-add-icon {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
 .project-add:hover {
   border-color: var(--color-ink);
   background: var(--color-ink);
   color: var(--surface-canvas);
 }
 
-.project-add span:last-child {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 0.7;
+.project-add:hover .project-add-control {
+  border-left-color: rgba(255, 255, 255, 0.42);
+}
+
+.project-add:hover .project-add-icon {
+  background: var(--surface-canvas);
+  color: var(--color-ink);
+  transform: scale(1.04);
 }
 
 .editorial-break {
@@ -1165,7 +1200,12 @@ a:focus-visible {
   }
 
   .project-add {
-    padding-block: 12px 10px;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    min-height: 42px;
+  }
+
+  .project-add-control {
+    width: 42px;
   }
 
   .editorial-break {
