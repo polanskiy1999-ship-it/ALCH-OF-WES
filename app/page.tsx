@@ -65,12 +65,8 @@ function ProductCard({
       </div>
 
       <button className="project-add" type="button" onClick={onAdd}>
-        <span className="project-add-label">
-          {quantity > 0 ? `В заказе · ${quantity}` : "Добавить в заказ"}
-        </span>
-        <span className="project-add-control" aria-hidden="true">
-          <span className="project-add-icon">+</span>
-        </span>
+        <span>{quantity > 0 ? `В заказе · ${quantity}` : "Добавить в заказ"}</span>
+        <span aria-hidden="true">+</span>
       </button>
     </article>
   );
