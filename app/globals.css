@@ -880,28 +880,68 @@ a:focus-visible {
   line-height: 1.35;
 }
 
-.quantity-control {
+.stepper {
   display: grid;
-  grid-template-columns: 26px 24px 26px;
+  grid-template-columns: 28px minmax(22px, auto) 28px;
   align-items: center;
-  border: 1px solid #cfcfcf;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #d8d8d8;
+  border-radius: 999px;
+  background: var(--surface-canvas);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
 }
 
-.quantity-control button {
-  width: 26px;
-  height: 30px;
+.stepper-button {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
   padding: 0;
+  place-items: center;
   border: 0;
-  background: transparent;
-  color: var(--color-ink);
+  border-radius: 50%;
+  background: #f0eff6;
+  color: #5a5a63;
   font: inherit;
-  font-size: 15px;
   cursor: pointer;
 }
 
-.quantity-control span {
-  text-align: center;
-  font-size: 11px;
+.stepper-button:hover {
+  background: var(--color-ink);
+  color: var(--surface-canvas);
+}
+
+.stepper-button:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.stepper-button svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 1.6;
+}
+
+.stepper-value {
+  position: relative;
+  min-width: 22px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  overflow: hidden;
+}
+
+.stepper-digit-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .order-form {
@@ -1212,12 +1252,13 @@ a:focus-visible {
     height: 72px;
   }
 
-  .quantity-control {
-    grid-template-columns: 24px 20px 24px;
+  .stepper {
+    grid-template-columns: 25px minmax(20px, auto) 25px;
   }
 
-  .quantity-control button {
-    width: 24px;
+  .stepper-button {
+    width: 25px;
+    height: 25px;
   }
 }
 

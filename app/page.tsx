@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Stepper } from "@/components/ui/stepper";
 import { categories, pieces, type Category, type Piece } from "./catalog";
+import { updateCartQuantity, type CartQuantities } from "./cart-quantity";
 import { buildOrderRequest, buildTelegramDraft } from "./order-payload";
 import { submitOrderRequest } from "./order-transport";
 
-type Cart = Record<string, number>;
 type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
 type HeaderMode = "top" | "hidden" | "visible";
 
@@ -75,7 +76,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<Category>("Все");
   const [sortMode, setSortMode] = useState<"default" | "alphabetical">("default");
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [cart, setCart] = useState<Cart>({});
+  const [cart, setCart] = useState<CartQuantities>({});
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
   const [headerMode, setHeaderMode] = useState<HeaderMode>("top");
@@ -189,12 +190,7 @@ export default function Home() {
   }
 
   function updateQuantity(pieceId: string, quantity: number) {
-    setCart((current) => {
-      const next = { ...current };
-      if (quantity <= 0) delete next[pieceId];
-      else next[pieceId] = Math.min(quantity, 20);
-      return next;
-    });
+    setCart((current) => updateCartQuantity(current, pieceId, quantity));
     setOrderStatus("idle");
   }
 
@@ -494,23 +490,14 @@ export default function Home() {
                         <strong>{piece.title}</strong>
                         <span>{piece.detail}</span>
                       </div>
-                      <div className="quantity-control" aria-label={`Количество: ${piece.title}`}>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(piece.id, quantity - 1)}
-                          aria-label={`Уменьшить количество: ${piece.title}`}
-                        >
-                          −
-                        </button>
-                        <span>{quantity}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(piece.id, quantity + 1)}
-                          aria-label={`Увеличить количество: ${piece.title}`}
-                        >
-                          +
-                        </button>
-                      </div>
+                      <Stepper
+                        className="quantity-stepper"
+                        value={quantity}
+                        min={0}
+                        max={20}
+                        onChange={(next) => updateQuantity(piece.id, next)}
+                        ariaLabel={`Количество: ${piece.title}`}
+                      />
                     </div>
                   ))}
                 </div>
