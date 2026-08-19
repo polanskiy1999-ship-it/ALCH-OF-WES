@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  root: fileURLToPath(new URL("./pages", import.meta.url)),
+  root: fileURLToPath(new URL("./github-pages", import.meta.url)),
   publicDir: fileURLToPath(new URL("./public", import.meta.url)),
   base: "/",
   plugins: [react()],
