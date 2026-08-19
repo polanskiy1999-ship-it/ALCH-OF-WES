@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     incomingHeaders.get("x-forwarded-proto") ??
     (host.includes("localhost") ? "http" : "https");
   const socialImage = new URL(
-    "/og-alchemy-wordmark.png",
+    "/og-alchemy-wordmark.jpg",
     `${protocol}://${host}`,
   ).toString();
 

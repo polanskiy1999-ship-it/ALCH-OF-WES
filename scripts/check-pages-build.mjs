@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 const requiredArtifacts = [
   "index.html",
   "CNAME",
-  "og-alchemy-wordmark.png",
+  "og-alchemy-wordmark.jpg",
   "images/tulip-grand-wide.jpg",
 ];
 

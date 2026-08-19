@@ -272,7 +272,7 @@ export default function Home() {
       <section className="hero" id="top" aria-labelledby="hero-title">
         <img
           className="hero-image"
-          src="/images/hero-editorial.png"
+          src="/images/hero-editorial.jpg"
           alt="Букет коралловых свечей-тюльпанов на столике кафе"
         />
         <h1 id="hero-title">Alchemy of Wishes</h1>
