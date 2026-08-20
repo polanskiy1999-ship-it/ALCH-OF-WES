@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Stepper } from "@/components/ui/stepper";
 import { categories, pieces, type Category, type Piece } from "./catalog";
 import { updateCartQuantity, type CartQuantities } from "./cart-quantity";
+import { calculateFloatingOrderShift } from "./floating-order-position";
 import { buildOrderRequest, buildTelegramDraft } from "./order-payload";
 import { submitOrderRequest } from "./order-transport";
 
@@ -140,6 +141,8 @@ export default function Home() {
   const [headerMode, setHeaderMode] = useState<HeaderMode>("top");
   const sortControlRef = useRef<HTMLDivElement>(null);
   const lastScrollYRef = useRef(0);
+  const footerRef = useRef<HTMLElement>(null);
+  const floatingOrderRef = useRef<HTMLButtonElement>(null);
 
   const visiblePieces = useMemo(() => {
     const filtered =
@@ -238,6 +241,42 @@ export default function Home() {
       if (animationFrame !== 0) window.cancelAnimationFrame(animationFrame);
     };
   }, []);
+
+  useEffect(() => {
+    if (cartCount === 0) return;
+
+    let animationFrame = 0;
+    const updateFloatingOrder = () => {
+      const footer = footerRef.current;
+      const button = floatingOrderRef.current;
+      if (!footer || !button) return;
+
+      const bottomGap = window.innerWidth <= 720 ? 14 : 24;
+      const shift = calculateFloatingOrderShift(
+        window.innerHeight,
+        footer.getBoundingClientRect().top,
+        bottomGap,
+      );
+      button.style.setProperty("--footer-shift", `${shift}px`);
+      animationFrame = 0;
+    };
+
+    const requestUpdate = () => {
+      if (animationFrame === 0) {
+        animationFrame = window.requestAnimationFrame(updateFloatingOrder);
+      }
+    };
+
+    updateFloatingOrder();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (animationFrame !== 0) window.cancelAnimationFrame(animationFrame);
+    };
+  }, [cartCount]);
 
   function addToCart(pieceId: string) {
     setCart((current) => ({
@@ -415,75 +454,69 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-break" aria-label="Тюльпановая коллекция">
-        <img
-          src="/images/tulip-grand-wide.jpg"
-          alt="Большой букет разноцветных свечей-тюльпанов"
-          loading="lazy"
-        />
-        <div className="editorial-stamp">Tulipa · 01</div>
-        <p>Свечи, собранные как цветы.</p>
-      </section>
-
-      <section className="studio" id="studio" aria-labelledby="founder-title">
-        <div className="founder-portrait">
-          <img
-            src="/images/evgenia-founder.webp"
-            alt="Евгения — создательница Alchemy of Wishes"
-            loading="lazy"
-          />
+      <footer className="site-footer" id="studio" ref={footerRef}>
+        <div className="footer-intro">
+          <p className="footer-kicker">Свечная студия Евгении</p>
+          <p className="footer-statement">
+            Alchemy of Wishes — свечная студия Евгении. Она придумывает формы,
+            выбирает натуральные материалы и вручную собирает каждую композицию.
+            Поэтому даже похожие букеты всегда немного отличаются.
+          </p>
         </div>
 
-        <div className="founder-copy">
-          <p className="studio-kicker">Создательница Alchemy of Wishes</p>
-          <h2 id="founder-title">Евгения</h2>
-          <div className="founder-story">
-            <p>
-              Евгения является автором всех свечей и композиций, представленных
-              на этом сайте.
-            </p>
-            <p>
-              Она придумывает формы, выбирает и закупает только натуральные и
-              качественные материалы, подбирает оттенки и вручную собирает каждый
-              букет. Поэтому даже похожие композиции немного отличаются друг от
-              друга как настоящие цветы.
-            </p>
-          </div>
+        <div className="footer-column">
+          <p className="footer-column-title">Коллекции</p>
+          {categories.filter((category) => category !== "Все").map((category) => (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveCategory(category);
+                document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              key={category}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        <div className="footer-column">
+          <p className="footer-column-title">Студия</p>
+          <span>Ручная работа</span>
+          <span>Натуральные материалы</span>
+          <span>Москва</span>
+          <span>2026</span>
+        </div>
+
+        <div className="footer-bottom">
           <a
-            className="telegram-link founder-telegram"
+            href="https://www.instagram.com/alchemy_of_wish?igsh=MWR4eXN3MHlxamR0aA=="
+            target="_blank"
+            rel="noreferrer"
+          >
+            Instagram <span aria-hidden="true">↗︎</span>
+          </a>
+          <a className="back-to-top" href="#top" aria-label="Наверх">
+            Наверх <span aria-hidden="true">↑</span>
+          </a>
+          <a
+            className="footer-telegram"
             href="https://t.me/alchemy_of_wishes"
             target="_blank"
             rel="noreferrer"
           >
-            <span>Наш телеграмм</span>
-            <span aria-hidden="true">↗︎</span>
+            Telegram <span aria-hidden="true">↗︎</span>
           </a>
         </div>
-      </section>
-
-      <footer className="site-footer">
-        <span className="footer-brand">Alchemy of Wishes</span>
-        <div className="footer-end">
-          <span className="footer-meta">Свечная студия · 2026</span>
-          <div className="footer-actions">
-            <a
-              className="footer-telegram"
-              href="https://t.me/alchemy_of_wishes"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>Наш Telegram</span>
-              <span aria-hidden="true">↗︎</span>
-            </a>
-          </div>
-        </div>
-        <a className="back-to-top" href="#top" aria-label="Наверх">
-          Наверх <span aria-hidden="true">↑</span>
-        </a>
       </footer>
 
       {cartCount > 0 && !isCartOpen ? (
-        <button className="floating-order" type="button" onClick={openCart}>
+        <button
+          className="floating-order"
+          type="button"
+          onClick={openCart}
+          ref={floatingOrderRef}
+        >
           <span>Оформить заказ</span>
           <span>{cartCount}</span>
         </button>
