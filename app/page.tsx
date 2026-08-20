@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Stepper } from "@/components/ui/stepper";
 import { categories, pieces, type Category, type Piece } from "./catalog";
 import { updateCartQuantity, type CartQuantities } from "./cart-quantity";
@@ -9,6 +11,21 @@ import { submitOrderRequest } from "./order-transport";
 
 type OrderStatus = "idle" | "submitting" | "sent" | "telegram" | "error";
 type HeaderMode = "top" | "hidden" | "visible";
+
+const carouselImageVariants = {
+  enter: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? "3%" : "-3%",
+  }),
+  center: {
+    opacity: 1,
+    x: "0%",
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? "-3%" : "3%",
+  }),
+};
 
 function ProductCard({
   piece,
@@ -20,23 +37,80 @@ function ProductCard({
   onAdd: () => void;
 }) {
   const [activeImage, setActiveImage] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(1);
   const currentImage = piece.images[activeImage] ?? piece.images[0];
+
+  function showImage(index: number) {
+    if (index === activeImage || index < 0 || index >= piece.images.length) return;
+    setSlideDirection(index > activeImage ? 1 : -1);
+    setActiveImage(index);
+  }
 
   return (
     <article className="project">
       <div className="project-media">
-        <img
-          className="project-image"
-          src={currentImage}
-          alt={`${piece.title} — ${piece.detail.toLowerCase()}`}
-          loading="lazy"
-          style={piece.focal ? { objectPosition: piece.focal } : undefined}
-        />
+        <AnimatePresence initial={false} custom={slideDirection} mode="sync">
+          <motion.img
+            key={currentImage}
+            className="project-image"
+            src={currentImage}
+            alt={`${piece.title} — ${piece.detail.toLowerCase()}`}
+            loading="lazy"
+            style={piece.focal ? { objectPosition: piece.focal } : undefined}
+            custom={slideDirection}
+            variants={carouselImageVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </AnimatePresence>
         {piece.images.length > 1 ? (
-          <span className="project-count" aria-hidden="true">
-            {String(activeImage + 1).padStart(2, "0")} /{" "}
-            {String(piece.images.length).padStart(2, "0")}
-          </span>
+          <>
+            <button
+              className="project-carousel-button project-carousel-button-prev"
+              type="button"
+              onClick={() => showImage(activeImage - 1)}
+              disabled={activeImage === 0}
+              aria-label={`Предыдущий кадр: ${piece.title}`}
+            >
+              <ChevronLeft aria-hidden="true" size={20} strokeWidth={1.5} />
+            </button>
+
+            <div className="project-carousel-indicators" aria-label={`Фотографии: ${piece.title}`}>
+              {piece.images.map((image, index) => (
+                <motion.button
+                  layout
+                  key={`${image}-${index}`}
+                  className={
+                    activeImage === index
+                      ? "project-carousel-indicator is-active"
+                      : "project-carousel-indicator"
+                  }
+                  type="button"
+                  onClick={() => showImage(index)}
+                  aria-label={`Показать кадр ${index + 1} из ${piece.images.length}`}
+                  aria-pressed={activeImage === index}
+                  transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                />
+              ))}
+            </div>
+
+            <button
+              className="project-carousel-button project-carousel-button-next"
+              type="button"
+              onClick={() => showImage(activeImage + 1)}
+              disabled={activeImage === piece.images.length - 1}
+              aria-label={`Следующий кадр: ${piece.title}`}
+            >
+              <ChevronRight aria-hidden="true" size={20} strokeWidth={1.5} />
+            </button>
+
+            <span className="project-count" aria-hidden="true">
+              {String(activeImage + 1).padStart(2, "0")} /{" "}
+              {String(piece.images.length).padStart(2, "0")}
+            </span>
+          </>
         ) : null}
       </div>
 
@@ -46,22 +120,6 @@ function ProductCard({
           <p>{piece.detail}</p>
         </div>
 
-        {piece.images.length > 1 ? (
-          <div className="project-thumbs" aria-label={`Фотографии: ${piece.title}`}>
-            {piece.images.map((image, index) => (
-              <button
-                key={image}
-                className={activeImage === index ? "project-thumb is-active" : "project-thumb"}
-                type="button"
-                onClick={() => setActiveImage(index)}
-                aria-label={`Показать кадр ${index + 1} из ${piece.images.length}`}
-                aria-pressed={activeImage === index}
-              >
-                <img src={image} alt="" aria-hidden="true" loading="lazy" />
-              </button>
-            ))}
-          </div>
-        ) : null}
       </div>
 
       <button className="project-add" type="button" onClick={onAdd}>
