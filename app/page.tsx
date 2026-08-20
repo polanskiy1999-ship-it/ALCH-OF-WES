@@ -315,13 +315,13 @@ export default function Home() {
               Заказ <span>{cartCount}</span>
             </button>
             <a
-              className="telegram-link telegram-button"
+              className="telegram-button"
               href="https://t.me/alchemy_of_wishes"
               target="_blank"
               rel="noreferrer"
             >
               <span>Telegram</span>
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true">↗︎</span>
             </a>
           </nav>
         </header>
@@ -456,7 +456,7 @@ export default function Home() {
             rel="noreferrer"
           >
             <span>Наш телеграмм</span>
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true">↗︎</span>
           </a>
         </div>
       </section>
@@ -467,18 +467,18 @@ export default function Home() {
           <span className="footer-meta">Свечная студия · 2026</span>
           <div className="footer-actions">
             <a
-              className="telegram-link footer-telegram"
+              className="footer-telegram"
               href="https://t.me/alchemy_of_wishes"
               target="_blank"
               rel="noreferrer"
             >
               <span>Наш Telegram</span>
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true">↗︎</span>
             </a>
           </div>
         </div>
         <a className="back-to-top" href="#top" aria-label="Наверх">
-          <span aria-hidden="true">↑</span>
+          Наверх <span aria-hidden="true">↑</span>
         </a>
       </footer>
 
@@ -581,7 +581,7 @@ export default function Home() {
                   </label>
                   <button className="order-submit" type="submit" disabled={orderStatus === "submitting"}>
                     <span>{orderStatus === "submitting" ? "Отправляем…" : "Отправить заказ"}</span>
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true">↗︎</span>
                   </button>
                   <p className="order-status" aria-live="polite">
                     {orderStatus === "telegram"
