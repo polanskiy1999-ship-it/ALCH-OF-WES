@@ -456,7 +456,7 @@ export default function Home() {
 
       <footer className="site-footer" id="studio" ref={footerRef}>
         <div className="footer-intro">
-          <p className="footer-kicker">Свечная студия Евгении</p>
+          <p className="footer-kicker">Свечная мастерская</p>
           <p className="footer-statement">
             Alchemy of Wishes — свечная студия Евгении. Она придумывает формы,
             выбирает натуральные материалы и вручную собирает каждую композицию.
