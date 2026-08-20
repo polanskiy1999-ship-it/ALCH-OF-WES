@@ -12,3 +12,12 @@ test("product add action matches the pre-experiment card geometry", async () => 
   assert.match(hover, /background:\s*var\(--color-ink\);/);
   assert.match(hover, /color:\s*var\(--surface-canvas\);/);
 });
+
+test("product card keeps the reference-style metadata close to its image", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  const meta = css.match(/\.project-meta\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+  const add = css.match(/\.project-add\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+
+  assert.match(meta, /min-height:\s*34px;/);
+  assert.match(add, /margin-top:\s*8px;/);
+});

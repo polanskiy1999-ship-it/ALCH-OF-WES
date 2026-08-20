@@ -240,7 +240,7 @@ export default function Home() {
   }
 
   return (
-    <main className="site-shell">
+    <main className="site-shell" id="top">
       <div className="site-header-slot">
         <header
           className={`site-header${headerMode === "top" ? "" : " is-floating"}${
@@ -269,24 +269,10 @@ export default function Home() {
         </header>
       </div>
 
-      <section className="hero" id="top" aria-labelledby="hero-title">
-        <img
-          className="hero-image"
-          src="/images/hero-editorial.jpg"
-          alt="Букет коралловых свечей-тюльпанов на столике кафе"
-        />
-        <h1 id="hero-title">Alchemy of Wishes</h1>
-      </section>
-
       <section className="collection" id="collection" aria-label="Каталог свечей">
         <div className="catalog-toolbar">
           <nav className="filters" aria-label="Фильтр каталога">
             {categories.map((category) => {
-              const count =
-                category === "Все"
-                  ? pieces.length
-                  : pieces.filter((piece) => piece.type === category).length;
-
               return (
                 <button
                   key={category}
@@ -295,7 +281,7 @@ export default function Home() {
                   onClick={() => setActiveCategory(category)}
                   aria-pressed={activeCategory === category}
                 >
-                  {category} <span>{count}</span>
+                  {category}
                 </button>
               );
             })}
